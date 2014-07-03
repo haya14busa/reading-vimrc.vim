@@ -39,9 +39,12 @@ let s:ARCHIVES_URL = 'http://vim-jp.org/reading-vimrc/json/archives.json'
 let g:reading_vimrc#ROOT_URL = 'http://vim-jp.org/reading-vimrc/'
 
 function! reading_vimrc#get_archives()
+    if exists('s:archives')
+        return s:archives
+    endif
     let request = s:HTTP.get(s:ARCHIVES_URL)
-    let archives = s:JSON.decode(request.content)
-    return archives
+    let s:archives = s:JSON.decode(request.content)
+    return s:archives
 endfunction
 
 " Restore 'cpoptions' {{{
