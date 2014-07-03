@@ -1,5 +1,5 @@
 "=============================================================================
-" FILE: autoload/reading_vimrc.vim
+" FILE: autoload/unite/sources/reading_vimrc/log.vim
 " AUTHOR: haya14busa
 " Last Change: 03-07-2014.
 " License: MIT license  {{{
@@ -29,19 +29,44 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 
-" Vital
-let s:V = vital#of('reading_vimrc')
-let s:HTTP = s:V.import('Web.HTTP')
-let s:JSON = s:V.import('Web.JSON')
+" reading-vimrc/log
+let s:source = {
+\ 'name' : 'reading-vimrc/log',
+\ 'description' : 'Log urls of reading vimrc',
+\ 'type' : 'uri',
+\ }
 
-" CONST
-let s:ARCHIVES_URL = 'http://vim-jp.org/reading-vimrc/json/archives.json'
-let g:reading_vimrc#ROOT_URL = 'http://vim-jp.org/reading-vimrc/'
+function! unite#sources#reading_vimrc#log#define()
+    return s:source
+endfunction
 
-function! reading_vimrc#get_archives()
-    let request = s:HTTP.get(s:ARCHIVES_URL)
-    let archives = s:JSON.decode(request.content)
-    return archives
+function! s:source.gather_candidates(args, context)
+    let archives = reading_vimrc#get_archives()
+
+    let candidates = []
+    for archive in archives
+        let rj3_id = repeat('0', 3 - len(archive.id)) . archive.id
+        let archive_url = g:reading_vimrc#ROOT_URL . 'archive/' . rj3_id . '.html'
+        call add(candidates, {
+        \   'word' : s:allign_word(archive.id, archive.author.name, archive.date),
+        \   'kind' : 'uri',
+        \   'action__name' : s:source.name,
+        \   'action__path': archive_url
+        \ })
+    endfor
+    return candidates
+endfunction
+
+function! s:allign_word(id, author_name, date)
+    let rjust_id = 
+    \   repeat(' ',
+    \          g:unite#sources#reading_vimrc#MAX_ID_WIDTH - len(a:id)
+    \   ) . a:id
+    let rjust_name = 
+    \   repeat(' ',
+    \          g:unite#sources#reading_vimrc#MAX_NAME_WIDTH - strdisplaywidth(a:author_name)
+    \   ) . a:author_name
+    return rjust_id . ' : ' . rjust_name . ' : ' . a:date
 endfunction
 
 " Restore 'cpoptions' {{{
