@@ -47,6 +47,19 @@ function! reading_vimrc#get_archives()
     return s:archives
 endfunction
 
+" For unite souces helper
+function! reading_vimrc#align_word(id, author_name, date)
+    let rjust_id = 
+    \   repeat(' ',
+    \          g:unite#sources#reading_vimrc#MAX_ID_WIDTH - len(a:id)
+    \   ) . a:id
+    let rjust_name = 
+    \   repeat(' ',
+    \          g:unite#sources#reading_vimrc#MAX_NAME_WIDTH - strdisplaywidth(a:author_name)
+    \   ) . a:author_name
+    return rjust_id . ' : ' . rjust_name . ' : ' . a:date
+endfunction
+
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo

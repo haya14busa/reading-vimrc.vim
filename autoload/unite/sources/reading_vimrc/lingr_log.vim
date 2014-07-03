@@ -46,25 +46,13 @@ function! s:source.gather_candidates(args, context)
     let candidates = []
     for archive in archives
         call add(candidates, {
-        \   'word' : s:allign_word(archive.id, archive.author.name, archive.date),
+        \   'word' : reading_vimrc#align_word(archive.id, archive.author.name, archive.date),
         \   'kind' : 'uri',
         \   'action__name' : s:source.name,
         \   'action__path': archive.log
         \ })
     endfor
     return candidates
-endfunction
-
-function! s:allign_word(id, author_name, date)
-    let rjust_id = 
-    \   repeat(' ',
-    \          g:unite#sources#reading_vimrc#MAX_ID_WIDTH - len(a:id)
-    \   ) . a:id
-    let rjust_name = 
-    \   repeat(' ',
-    \          g:unite#sources#reading_vimrc#MAX_NAME_WIDTH - strdisplaywidth(a:author_name)
-    \   ) . a:author_name
-    return rjust_id . ' : ' . rjust_name . ' : ' . a:date
 endfunction
 
 " Restore 'cpoptions' {{{
