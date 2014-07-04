@@ -31,8 +31,8 @@ set cpo&vim
 
 " reading-vimrc/raw_vimrc
 let s:source = {
-\ 'name' : 'reading-vimrc/raw_vimrc',
-\ 'description' : 'raw_vimrc urls',
+\ 'name' : 'reading-vimrc/raw-vimrc',
+\ 'description' : 'raw vimrc urls',
 \ 'type' : 'uri',
 \ 'action_table' : {},
 \ }
